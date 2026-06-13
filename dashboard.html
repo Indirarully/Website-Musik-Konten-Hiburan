@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#fdf0f5;min-height:100vh;display:flex}
+    /* SIDEBAR */
+    .sidebar{width:220px;background:#fff;border-right:1px solid #f4c0d1;display:flex;flex-direction:column;padding:24px 0;flex-shrink:0;min-height:100vh}
+    .brand{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid #f4c0d1;margin-bottom:16px}
+    .brand-icon{width:38px;height:38px;border-radius:50%;background:#D4537E;display:flex;align-items:center;justify-content:center}
+    .brand-icon i{font-size:18px;color:#fff}
+    .brand-name{font-size:17px;font-weight:700;color:#72243E}
+    .brand-name span{color:#D4537E}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:14px;color:#993556;cursor:pointer;transition:background .15s,color .15s;text-decoration:none}
+    .nav-item:hover{background:#fdf0f5;color:#D4537E}
+    .nav-item.active{background:#fdf0f5;color:#D4537E;font-weight:600;border-right:3px solid #D4537E}
+    .nav-item i{font-size:19px;flex-shrink:0}
+    .nav-section{font-size:10px;font-weight:700;color:#c99ab0;letter-spacing:.1em;padding:14px 20px 6px;text-transform:uppercase}
+    .sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid #f4c0d1}
+    .logout-btn{display:flex;align-items:center;gap:10px;font-size:14px;color:#D4537E;cursor:pointer;background:none;border:none;font-family:inherit;width:100%;padding:0}
+    .logout-btn:hover{color:#993556}
+    /* MAIN */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .topbar{background:#fff;border-bottom:1px solid #f4c0d1;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+    .topbar h1{font-size:18px;font-weight:700;color:#72243E}
+    .topbar-right{display:flex;align-items:center;gap:14px}
+    .avatar{width:36px;height:36px;border-radius:50%;background:#f9d7e7;border:2px solid #D4537E;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#D4537E;font-size:18px}
+    .search-bar{display:flex;align-items:center;gap:8px;background:#fdf0f5;border:1.5px solid #f4c0d1;border-radius:10px;padding:8px 14px;width:220px}
+    .search-bar i{color:#ED93B1;font-size:16px}
+    .search-bar input{background:transparent;border:none;outline:none;font-size:13px;color:#4B1528;font-family:inherit;width:100%}
+    .search-bar input::placeholder{color:#c99ab0}
+    .content{padding:24px 28px;overflow-y:auto;flex:1}
+    /* CARDS */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:#fff;border-radius:16px;padding:18px;border:1px solid #f4c0d1;display:flex;flex-direction:column;gap:8px}
+    .stat-card .icon{width:40px;height:40px;border-radius:10px;background:#fdf0f5;display:flex;align-items:center;justify-content:center}
+    .stat-card .icon i{font-size:20px;color:#D4537E}
+    .stat-card .num{font-size:26px;font-weight:700;color:#72243E}
+    .stat-card .lbl{font-size:12px;color:#b07090}
+    .section-title{font-size:15px;font-weight:700;color:#72243E;margin-bottom:12px}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+    .card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f4c0d1}
+    /* HISTORY TABLE */
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{text-align:left;font-size:11px;font-weight:600;color:#b07090;letter-spacing:.05em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid #f4c0d1}
+    td{padding:10px 10px;border-bottom:.5px solid #f4c0d1;color:#4B1528;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500}
+    .badge-pop{background:#fce4ec;color:#C2185B}
+    .badge-rb{background:#f8d7e7;color:#993556}
+    .badge-indie{background:#f3e5f5;color:#7B1FA2}
+    .badge-rating{background:#fff3e0;color:#E65100}
+    /* MOOD BARS */
+    .mood-list{display:flex;flex-direction:column;gap:12px}
+    .mood-row{display:flex;flex-direction:column;gap:4px}
+    .mood-label{display:flex;justify-content:space-between;font-size:13px;color:#72243E;font-weight:500}
+    .mood-bar-bg{background:#fdf0f5;border-radius:99px;height:8px;overflow:hidden}
+    .mood-bar{height:8px;border-radius:99px;background:linear-gradient(90deg,#ED93B1,#D4537E)}
+    /* REKOMEN */
+    .rec-list{display:flex;flex-direction:column;gap:10px}
+    .rec-item{display:flex;align-items:center;gap:12px;padding:10px;background:#fdf0f5;border-radius:12px;cursor:pointer;transition:background .15s}
+    .rec-item:hover{background:#f9d7e7}
+    .rec-thumb{width:40px;height:40px;border-radius:10px;background:#f4c0d1;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rec-thumb i{font-size:18px;color:#D4537E}
+    .rec-info{flex:1}
+    .rec-title{font-size:13px;font-weight:600;color:#4B1528}
+    .rec-sub{font-size:11px;color:#b07090}
+    .rec-stars{font-size:12px;color:#D4537E}
+    @media(max-width:768px){.sidebar{display:none}.stats-grid{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="ti ti-music"></i></div>
+    <span class="brand-name">Music<span>Rec</span></span>
+  </div>
+  <span class="nav-section">Menu Utama</span>
+  <a class="nav-item active" href="dashboard.html"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+  <a class="nav-item" href="profile.html"><i class="ti ti-user-circle"></i>Profil Saya</a>
+  <a class="nav-item" href="#"><i class="ti ti-search"></i>Cari Musik</a>
+  <a class="nav-item" href="#"><i class="ti ti-star"></i>Beri Rating</a>
+  <span class="nav-section">Riwayat</span>
+  <a class="nav-item" href="#"><i class="ti ti-history"></i>Riwayat Pencarian</a>
+  <a class="nav-item" href="#"><i class="ti ti-heart"></i>Favorit Saya</a>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:19px"></i>Keluar</button>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <h1>Selamat datang, Indira 👋</h1>
+    <div class="topbar-right">
+      <div class="search-bar"><i class="ti ti-search"></i><input type="text" placeholder="Cari lagu, artis..."/></div>
+      <div class="avatar" onclick="window.location.href='profile.html'"><i class="ti ti-user"></i></div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="icon"><i class="ti ti-search"></i></div><div class="num">128</div><div class="lbl">Total Pencarian</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-star"></i></div><div class="num">47</div><div class="lbl">Lagu Dirating</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-heart"></i></div><div class="num">23</div><div class="lbl">Lagu Favorit</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-sparkles"></i></div><div class="num">15</div><div class="lbl">Rekomendasi Baru</div></div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="section-title">Distribusi Mood Favoritmu</div>
+        <div class="mood-list">
+          <div class="mood-row"><div class="mood-label"><span>Happy 😊</span><span>72%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:72%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Chill 😌</span><span>58%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:58%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Energetic ⚡</span><span>45%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:45%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Sad 🥺</span><span>30%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:30%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Romantic 💕</span><span>20%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:20%"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Rekomendasi Untukmu ✨</div>
+        <div class="rec-list">
+          <div class="rec-item"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Love Story (Taylor's Version)</div><div class="rec-sub">Taylor Swift • Pop</div></div><div class="rec-stars">★ 4.8</div></div>
+          <div class="rec-item"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Dynamite</div><div class="rec-sub">BTS • K-Pop</div></div><div class="rec-stars">★ 4.7</div></div>
+          <div class="rec-item"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">As It Was</div><div class="rec-sub">Harry Styles • Pop</div></div><div class="rec-stars">★ 4.6</div></div>
+          <div class="rec-item"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Espresso</div><div class="rec-sub">Sabrina Carpenter • Pop</div></div><div class="rec-stars">★ 4.5</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Riwayat Pencarian Terakhir</div>
+      <table>
+        <thead><tr><th>#</th><th>Judul Lagu</th><th>Artis</th><th>Genre</th><th>Rating Kamu</th><th>Waktu</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Anti-Hero</td><td>Taylor Swift</td><td><span class="badge badge-pop">Pop</span></td><td><span class="badge badge-rating">★ 5.0</span></td><td>Hari ini, 20:14</td></tr>
+          <tr><td>2</td><td>Cruel Summer</td><td>Taylor Swift</td><td><span class="badge badge-pop">Pop</span></td><td><span class="badge badge-rating">★ 4.5</span></td><td>Hari ini, 19:02</td></tr>
+          <tr><td>3</td><td>Supernatural</td><td>NCT 127</td><td><span class="badge badge-rb">R&B</span></td><td><span class="badge badge-rating">★ 5.0</span></td><td>Kemarin, 21:30</td></tr>
+          <tr><td>4</td><td>Harlequin</td><td>Lady Gaga</td><td><span class="badge badge-pop">Pop</span></td><td><span class="badge badge-rating">★ 4.0</span></td><td>Kemarin, 18:45</td></tr>
+          <tr><td>5</td><td>Paranoia</td><td>NCT 127</td><td><span class="badge badge-indie">Indie</span></td><td><span class="badge badge-rating">★ 4.5</span></td><td>2 hari lalu</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+  function logout(){
+    if(confirm('Yakin mau keluar?')) window.location.href='login.html';
+  }
+</script>
+</body>
+</html>

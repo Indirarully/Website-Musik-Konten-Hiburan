@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fdf0f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 900px;
+      background: #fff;
+      border-radius: 24px;
+      border: 1px solid #f4c0d1;
+      overflow: hidden;
+      min-height: 560px;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      flex: 1;
+      background: #f9d7e7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      gap: 16px;
+    }
+
+    .left-panel .brand-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #D4537E;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .left-panel .brand-icon i {
+      font-size: 32px;
+      color: #fff;
+    }
+
+    .left-panel h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #72243E;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    .left-panel h1 span { color: #D4537E; }
+
+    .left-panel p {
+      font-size: 13px;
+      color: #993556;
+      text-align: center;
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    .feature-list {
+      list-style: none;
+      width: 100%;
+      max-width: 240px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #72243E;
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #f4c0d1;
+    }
+
+    .feature-list li i {
+      font-size: 18px;
+      color: #D4537E;
+      flex-shrink: 0;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      flex: 1;
+      padding: 40px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .right-panel h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #72243E;
+      margin-bottom: 4px;
+    }
+
+    .right-panel .subtitle {
+      font-size: 13px;
+      color: #b07090;
+      margin-bottom: 24px;
+    }
+
+    .right-panel .subtitle a {
+      color: #D4537E;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    .field-group { margin-bottom: 16px; }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #993556;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fdf0f5;
+      border: 1.5px solid #f4c0d1;
+      border-radius: 12px;
+      padding: 11px 14px;
+      transition: border-color 0.2s;
+    }
+
+    .input-row:focus-within {
+      border-color: #D4537E;
+      background: #fff;
+    }
+
+    .input-row i {
+      font-size: 18px;
+      color: #ED93B1;
+      flex-shrink: 0;
+    }
+
+    .input-row input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      color: #4B1528;
+      font-family: inherit;
+    }
+
+    .input-row input::placeholder { color: #c99ab0; }
+
+    .toggle-pw {
+      cursor: pointer;
+      color: #c99ab0;
+      font-size: 18px;
+      transition: color 0.2s;
+    }
+
+    .toggle-pw:hover { color: #D4537E; }
+
+    .row-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      margin-top: -4px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: #993556;
+      cursor: pointer;
+    }
+
+    .remember input[type="checkbox"] { accent-color: #D4537E; width: 14px; height: 14px; }
+
+    .forgot-link {
+      font-size: 12px;
+      color: #D4537E;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover { text-decoration: underline; }
+
+    .btn-primary {
+      width: 100%;
+      background: #D4537E;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover { background: #993556; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary i { font-size: 18px; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .divider-line { flex: 1; height: 1px; background: #f4c0d1; }
+    .divider-text { font-size: 12px; color: #c99ab0; white-space: nowrap; }
+
+    .social-row { display: flex; gap: 10px; }
+
+    .btn-social {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid #f4c0d1;
+      border-radius: 12px;
+      padding: 10px 8px;
+      font-size: 13px;
+      color: #72243E;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: border-color 0.2s, background 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-social:hover { border-color: #D4537E; background: #fdf0f5; }
+    .btn-social i { font-size: 17px; color: #D4537E; }
+
+    .register-text {
+      text-align: center;
+      font-size: 13px;
+      color: #b07090;
+      margin-top: 18px;
+    }
+
+    .register-text a {
+      color: #D4537E;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .register-text a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .left-panel { display: none; }
+      .right-panel { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="brand-icon">
+        <i class="ti ti-music"></i>
+      </div>
+      <h1>Music<span>Rec</span></h1>
+      <p>Sistem rekomendasi konten hiburan & musik pop berbasis preferensimu</p>
+
+      <ul class="feature-list">
+        <li>
+          <i class="ti ti-chart-bar"></i>
+          Dashboard riwayat pencarian
+        </li>
+        <li>
+          <i class="ti ti-mood-happy"></i>
+          Rekomendasi berdasarkan mood & genre
+        </li>
+        <li>
+          <i class="ti ti-user-circle"></i>
+          Profil preferensi pengguna
+        </li>
+        <li>
+          <i class="ti ti-star"></i>
+          Rating & ulasan konten
+        </li>
+      </ul>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <h2>Masuk Akun</h2>
+      <p class="subtitle">
+        Belum punya akun? <a href="register.html">Daftar di sini</a>
+      </p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+
+        <div class="field-group">
+          <label class="field-label" for="email">Alamat Email</label>
+          <div class="input-row">
+            <i class="ti ti-mail"></i>
+            <input type="email" id="email" placeholder="nama@email.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="password">Password</label>
+          <div class="input-row">
+            <i class="ti ti-lock"></i>
+            <input type="password" id="password" placeholder="Masukkan password" required autocomplete="current-password" />
+            <i class="ti ti-eye toggle-pw" id="togglePw" onclick="togglePassword()" title="Tampilkan password"></i>
+          </div>
+        </div>
+
+        <div class="row-between">
+          <label class="remember">
+            <input type="checkbox" id="remember" />
+            Ingat saya
+          </label>
+          <a href="forgot-password.html" class="forgot-link">Lupa password?</a>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          <i class="ti ti-login"></i>
+          LOGIN
+        </button>
+
+      </form>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-text">atau masuk dengan</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="social-row">
+        <button class="btn-social" onclick="handleSocialLogin('Google')">
+          <i class="ti ti-brand-google"></i>
+          Google
+        </button>
+        <button class="btn-social" onclick="handleSocialLogin('Facebook')">
+          <i class="ti ti-brand-facebook"></i>
+          Facebook
+        </button>
+      </div>
+
+      <p class="register-text">
+        Belum punya akun? <a href="register.html">Daftar sekarang</a>
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById('password');
+      const icon = document.getElementById('togglePw');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('ti-eye', 'ti-eye-off');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('ti-eye-off', 'ti-eye');
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      // TODO: sambungkan ke backend / API auth kamu di sini
+      // Contoh redirect setelah login:
+      // window.location.href = 'dashboard.html';
+      alert('Login sebagai: ' + email + '\n(Sambungkan ke backend kamu ya!)');
+    }
+
+    function handleSocialLogin(provider) {
+      // TODO: sambungkan ke OAuth provider
+      alert('Login dengan ' + provider + ' — sambungkan ke OAuth ya!');
+    }
+  </script>
+
+</body>
+</html>

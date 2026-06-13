@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profil — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#fdf0f5;min-height:100vh;display:flex}
+    .sidebar{width:220px;background:#fff;border-right:1px solid #f4c0d1;display:flex;flex-direction:column;padding:24px 0;flex-shrink:0;min-height:100vh}
+    .brand{display:flex;align-items:center;gap:10px;padding:0 20px 24px;border-bottom:1px solid #f4c0d1;margin-bottom:16px}
+    .brand-icon{width:38px;height:38px;border-radius:50%;background:#D4537E;display:flex;align-items:center;justify-content:center}
+    .brand-icon i{font-size:18px;color:#fff}
+    .brand-name{font-size:17px;font-weight:700;color:#72243E}
+    .brand-name span{color:#D4537E}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:14px;color:#993556;cursor:pointer;transition:background .15s;text-decoration:none}
+    .nav-item:hover{background:#fdf0f5;color:#D4537E}
+    .nav-item.active{background:#fdf0f5;color:#D4537E;font-weight:600;border-right:3px solid #D4537E}
+    .nav-item i{font-size:19px;flex-shrink:0}
+    .nav-section{font-size:10px;font-weight:700;color:#c99ab0;letter-spacing:.1em;padding:14px 20px 6px;text-transform:uppercase}
+    .sidebar-footer{margin-top:auto;padding:16px 20px;border-top:1px solid #f4c0d1}
+    .logout-btn{display:flex;align-items:center;gap:10px;font-size:14px;color:#D4537E;cursor:pointer;background:none;border:none;font-family:inherit;width:100%;padding:0}
+    .main{flex:1;display:flex;flex-direction:column}
+    .topbar{background:#fff;border-bottom:1px solid #f4c0d1;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+    .topbar h1{font-size:18px;font-weight:700;color:#72243E}
+    .content{padding:24px 28px;overflow-y:auto;flex:1}
+    .two-col{display:grid;grid-template-columns:320px 1fr;gap:20px}
+    .card{background:#fff;border-radius:16px;padding:24px;border:1px solid #f4c0d1;margin-bottom:20px}
+    .card h2{font-size:15px;font-weight:700;color:#72243E;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    .card h2 i{color:#D4537E}
+    .avatar-section{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:20px}
+    .avatar-big{width:88px;height:88px;border-radius:50%;background:#f9d7e7;border:3px solid #D4537E;display:flex;align-items:center;justify-content:center;font-size:36px;color:#D4537E;cursor:pointer}
+    .avatar-name{font-size:17px;font-weight:700;color:#72243E}
+    .avatar-sub{font-size:13px;color:#b07090}
+    .field-group{margin-bottom:14px}
+    .field-label{font-size:11px;font-weight:600;color:#993556;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px;display:block}
+    .input-row{display:flex;align-items:center;gap:10px;background:#fdf0f5;border:1.5px solid #f4c0d1;border-radius:12px;padding:10px 14px;transition:border-color .2s}
+    .input-row:focus-within{border-color:#D4537E;background:#fff}
+    .input-row i{font-size:17px;color:#ED93B1;flex-shrink:0}
+    .input-row input,.input-row select,.input-row textarea{flex:1;background:transparent;border:none;outline:none;font-size:13px;color:#4B1528;font-family:inherit}
+    .input-row input::placeholder,.input-row textarea::placeholder{color:#c99ab0}
+    .input-row textarea{resize:none;height:56px}
+    .mood-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+    .mood-chip{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1.5px solid #f4c0d1;background:#fff;cursor:pointer;font-size:13px;color:#993556;transition:all .15s;user-select:none}
+    .mood-chip.selected{background:#fdf0f5;border-color:#D4537E;color:#D4537E;font-weight:600}
+    .mood-chip i{font-size:18px}
+    .genre-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+    .genre-tag{padding:7px 14px;border-radius:99px;border:1.5px solid #f4c0d1;background:#fff;font-size:12px;color:#993556;cursor:pointer;transition:all .15s;user-select:none}
+    .genre-tag.selected{background:#D4537E;border-color:#D4537E;color:#fff;font-weight:600}
+    .btn-primary{background:#D4537E;color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .2s;font-family:inherit}
+    .btn-primary:hover{background:#993556}
+    .btn-primary i{font-size:17px}
+    .btn-outline{background:#fff;color:#D4537E;border:1.5px solid #D4537E;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+    .btn-outline:hover{background:#fdf0f5}
+    .btn-row{display:flex;gap:10px;margin-top:4px}
+    .info-label{font-size:11px;color:#b07090;margin-top:-10px;margin-bottom:10px}
+    @media(max-width:768px){.sidebar{display:none}.two-col{grid-template-columns:1fr}.content{padding:16px}}
+  </style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="brand">
+    <div class="brand-icon"><i class="ti ti-music"></i></div>
+    <span class="brand-name">Music<span>Rec</span></span>
+  </div>
+  <span class="nav-section">Menu Utama</span>
+  <a class="nav-item" href="dashboard.html"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+  <a class="nav-item active" href="profile.html"><i class="ti ti-user-circle"></i>Profil Saya</a>
+  <a class="nav-item" href="#"><i class="ti ti-search"></i>Cari Musik</a>
+  <a class="nav-item" href="#"><i class="ti ti-star"></i>Beri Rating</a>
+  <span class="nav-section">Riwayat</span>
+  <a class="nav-item" href="#"><i class="ti ti-history"></i>Riwayat Pencarian</a>
+  <a class="nav-item" href="#"><i class="ti ti-heart"></i>Favorit Saya</a>
+  <div class="sidebar-footer">
+    <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" style="font-size:19px"></i>Keluar</button>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <h1>Profil & Preferensi Saya</h1>
+  </div>
+  <div class="content">
+    <div class="two-col">
+      <!-- KIRI: BIODATA -->
+      <div>
+        <div class="card">
+          <div class="avatar-section">
+            <div class="avatar-big" title="Klik untuk ganti foto"><i class="ti ti-user"></i></div>
+            <div class="avatar-name" id="displayName">Indira Rully Pricilia</div>
+            <div class="avatar-sub">Bergabung sejak Juni 2026</div>
+          </div>
+          <h2><i class="ti ti-id-badge"></i>Data Diri</h2>
+          <div class="field-group">
+            <label class="field-label">Nama Lengkap</label>
+            <div class="input-row"><i class="ti ti-user"></i><input type="text" id="nama" value="Indira Rully Pricilia"/></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Username</label>
+            <div class="input-row"><i class="ti ti-at"></i><input type="text" id="username" value="indira_rully"/></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Alamat Email</label>
+            <div class="input-row"><i class="ti ti-mail"></i><input type="email" id="email" value="Navrida.indira@gmail.com"/></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Nomor WhatsApp</label>
+            <div class="input-row"><i class="ti ti-brand-whatsapp"></i><input type="tel" id="wa" value="08123456789"/></div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Bio Singkat</label>
+            <div class="input-row"><i class="ti ti-pencil"></i><textarea id="bio" placeholder="Ceritain selera musikmu...">NCTzen 🩷 | Suka pop & R&B | Sedang skripsi 😭</textarea></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="saveBiodata()"><i class="ti ti-device-floppy"></i>Simpan</button>
+            <button class="btn-outline" onclick="changePassword()">Ganti Password</button>
+          </div>
+        </div>
+      </div>
+      <!-- KANAN: PREFERENSI -->
+      <div>
+        <div class="card">
+          <h2><i class="ti ti-mood-happy"></i>Preferensi Mood</h2>
+          <p class="info-label">Pilih mood yang sering kamu rasakan saat mendengarkan musik</p>
+          <div class="mood-grid">
+            <div class="mood-chip selected" onclick="toggleMood(this)"><i class="ti ti-mood-happy"></i>Happy 😊</div>
+            <div class="mood-chip selected" onclick="toggleMood(this)"><i class="ti ti-leaf"></i>Chill 😌</div>
+            <div class="mood-chip" onclick="toggleMood(this)"><i class="ti ti-bolt"></i>Energetic ⚡</div>
+            <div class="mood-chip" onclick="toggleMood(this)"><i class="ti ti-cloud-rain"></i>Sad 🥺</div>
+            <div class="mood-chip selected" onclick="toggleMood(this)"><i class="ti ti-heart"></i>Romantic 💕</div>
+            <div class="mood-chip" onclick="toggleMood(this)"><i class="ti ti-flame"></i>Hype 🔥</div>
+          </div>
+        </div>
+        <div class="card">
+          <h2><i class="ti ti-music"></i>Genre Favorit</h2>
+          <p class="info-label">Pilih genre yang kamu suka (bisa lebih dari satu)</p>
+          <div class="genre-grid">
+            <div class="genre-tag selected" onclick="toggleGenre(this)">Pop</div>
+            <div class="genre-tag selected" onclick="toggleGenre(this)">K-Pop</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">R&B</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Indie</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Hip-Hop</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Electronic</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Jazz</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Classical</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Rock</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Dangdut</div>
+            <div class="genre-tag selected" onclick="toggleGenre(this)">OPM</div>
+            <div class="genre-tag" onclick="toggleGenre(this)">Gospel</div>
+          </div>
+        </div>
+        <div class="card">
+          <h2><i class="ti ti-adjustments"></i>Pengaturan Rekomendasi</h2>
+          <div class="field-group">
+            <label class="field-label">Jumlah Rekomendasi per Hari</label>
+            <div class="input-row"><i class="ti ti-list-numbers"></i>
+              <select><option>5 lagu</option><option selected>10 lagu</option><option>15 lagu</option><option>20 lagu</option></select>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Bahasa Lagu Preferensi</label>
+            <div class="input-row"><i class="ti ti-world"></i>
+              <select><option>Semua Bahasa</option><option selected>Indonesia + Inggris</option><option>Inggris saja</option><option>Korea saja</option></select>
+            </div>
+          </div>
+          <button class="btn-primary" onclick="savePreferensi()"><i class="ti ti-device-floppy"></i>Simpan Preferensi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleMood(el){el.classList.toggle('selected')}
+  function toggleGenre(el){el.classList.toggle('selected')}
+  function saveBiodata(){
+    document.getElementById('displayName').textContent=document.getElementById('nama').value;
+    alert('Data diri berhasil disimpan!');
+    // TODO: fetch PUT /api/profile
+  }
+  function savePreferensi(){
+    alert('Preferensi berhasil disimpan!');
+    // TODO: fetch PUT /api/preferences
+  }
+  function changePassword(){window.location.href='forgot-password.html'}
+  function logout(){if(confirm('Yakin mau keluar?'))window.location.href='login.html'}
+</script>
+</body>
+</html>
