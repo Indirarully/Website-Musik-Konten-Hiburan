@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Favorit — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link rel="stylesheet" href="sidebar.css"/>
+  <style>
+    .fav-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+    .fav-card{background:var(--bg3);border-radius:12px;padding:14px;border:1px solid var(--border);transition:border-color .2s;position:relative}
+    .fav-card:hover{border-color:var(--border2)}
+    .fav-thumb{width:48px;height:48px;border-radius:10px;background:rgba(212,132,154,0.15);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+    .fav-thumb img{width:48px;height:48px;border-radius:10px;object-fit:cover}
+    .fav-thumb i{font-size:22px;color:var(--pink)}
+    .fav-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .fav-artist{font-size:11px;color:var(--sub)}
+    .fav-remove{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;color:var(--sub);font-size:15px;transition:color .15s}
+    .fav-remove:hover{color:var(--pink)}
+    .btn-clear{background:transparent;border:1px solid var(--border);color:var(--sub);border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+    .btn-clear:hover{border-color:var(--pink);color:var(--pink)}
+    .title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="content">
+    <div class="card">
+      <div class="title-row">
+        <div class="section-title">Favorit Saya 🩷</div>
+        <button class="btn-clear" onclick="clearFavs()"><i class="ti ti-trash" style="font-size:13px"></i> Hapus Semua</button>
+      </div>
+      <div id="favContent"></div>
+    </div>
+  </div>
+</div>
+<script src="sidebar.js"></script>
+<script>
+  buildSidebar('favorites.html');
+  buildTopbar('Favorit Saya');
+
+  function renderFavs() {
+    const f = getFavorites();
+    const el = document.getElementById('favContent');
+    if (!f.length) {
+      el.innerHTML = '<div class="empty-state"><i class="ti ti-heart"></i><p>Belum ada lagu favorit.<br>Tap ❤️ saat memutar lagu untuk menyimpannya!</p></div>';
+      return;
+    }
+    el.innerHTML = `<div class="fav-grid">${f.map(item => `
+      <div class="fav-card">
+        <button class="fav-remove" onclick="removeFav('${item.title.replace(/'/g,"\\'")}')"><i class="ti ti-heart-off"></i></button>
+        <div class="fav-thumb">
+          ${item.cover ? `<img src="${item.cover}" onerror="this.parentElement.innerHTML='<i class=\\'ti ti-music\\'></i>'"/>` : '<i class="ti ti-music"></i>'}
+        </div>
+        <div class="fav-title">${item.title}</div>
+        <div class="fav-artist">${item.artist}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  function removeFav(title) {
+    removeFavorite(title);
+    renderFavs();
+  }
+
+  function clearFavs() {
+    if (confirm('Hapus semua favorit?')) {
+      localStorage.removeItem('musicrec_favorites');
+      renderFavs();
+    }
+  }
+
+  renderFavs();
+</script>
+</body>
+</html>

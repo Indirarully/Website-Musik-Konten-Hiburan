@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link rel="stylesheet" href="sidebar.css"/>
+  <style>
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+    .stat-card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);transition:border-color .2s}
+    .stat-card:hover{border-color:var(--border2)}
+    .stat-card .icon{width:32px;height:32px;border-radius:8px;background:rgba(212,132,154,0.12);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+    .stat-card .icon i{font-size:16px;color:var(--pink)}
+    .stat-card .num{font-size:20px;font-weight:700;color:var(--white)}
+    .stat-card .lbl{font-size:11px;color:var(--sub)}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+    .mood-list{display:flex;flex-direction:column;gap:10px}
+    .mood-row{display:flex;flex-direction:column;gap:4px}
+    .mood-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text)}
+    .mood-bar-bg{background:var(--bg3);border-radius:99px;height:5px;overflow:hidden}
+    .mood-bar{height:5px;border-radius:99px;background:linear-gradient(90deg,var(--cream),var(--pink))}
+    .rec-list{display:flex;flex-direction:column;gap:7px}
+    .rec-item{display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--bg3);border-radius:10px;cursor:pointer;transition:all .15s;border:1px solid transparent}
+    .rec-item:hover{border-color:var(--border2);background:rgba(212,132,154,0.07)}
+    .rec-thumb{width:34px;height:34px;border-radius:8px;background:rgba(212,132,154,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rec-thumb i{font-size:15px;color:var(--pink)}
+    .rec-info{flex:1;min-width:0}
+    .rec-title{font-size:12px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rec-sub{font-size:11px;color:var(--sub)}
+    .rec-stars{font-size:11px;color:var(--cream);flex-shrink:0}
+    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .history-table{width:100%;border-collapse:collapse;font-size:12px;min-width:380px}
+    .history-table th{text-align:left;font-size:10px;font-weight:600;color:var(--sub);letter-spacing:.05em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+    .history-table td{padding:9px 10px;border-bottom:1px solid rgba(212,132,154,0.07);vertical-align:middle}
+    .history-table tr:last-child td{border-bottom:none}
+    .song-name{font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;display:block}
+    .artist-name{color:var(--sub);font-size:11px;white-space:nowrap}
+    .row-link{cursor:pointer;transition:background .1s}
+    .row-link:hover{background:rgba(212,132,154,0.05)}
+    /* MINI PLAYER */
+    body{padding-bottom:76px}
+    .mini-player{position:fixed;bottom:0;left:0;right:0;background:rgba(38,28,36,0.97);backdrop-filter:blur(16px);border-top:1px solid var(--border2);padding:10px 16px;display:none;align-items:center;gap:12px;z-index:500}
+    .mini-player.show{display:flex}
+    .mini-progress-wrap{position:absolute;top:0;left:0;right:0;height:2px;background:var(--bg3);cursor:pointer}
+    .mini-progress{height:2px;background:linear-gradient(90deg,var(--cream),var(--pink));width:0%}
+    .mini-thumb{width:40px;height:40px;border-radius:9px;background:rgba(212,132,154,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .mini-thumb i{font-size:18px;color:var(--pink)}
+    .mini-info{flex:1;min-width:0}
+    .mini-title{font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mini-artist{font-size:11px;color:var(--sub)}
+    .mini-controls{display:flex;align-items:center;gap:4px;flex-shrink:0}
+    .ctrl-btn{width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:16px;transition:all .15s}
+    .ctrl-btn:hover{background:rgba(212,132,154,0.1);color:var(--pink2)}
+    .ctrl-btn.play{background:var(--pink3);color:var(--pink4);width:36px;height:36px;font-size:17px}
+    .ctrl-btn.play:hover{background:var(--pink)}
+    /* MODAL */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:600;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+    .modal-overlay.show{display:flex}
+    .modal{background:linear-gradient(180deg,#3a2832 0%,#261e24 100%);border-radius:22px 22px 0 0;border:1px solid var(--border);border-bottom:none;padding:22px 20px 36px;width:100%;max-width:480px;animation:up .28s ease}
+    @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal-handle{width:32px;height:3px;background:var(--border);border-radius:99px;margin:0 auto 18px}
+    .modal-art{width:80px;height:80px;border-radius:14px;background:rgba(212,132,154,0.12);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;overflow:hidden}
+    .modal-art img{width:80px;height:80px;object-fit:cover;border-radius:14px}
+    .modal-art i{font-size:32px;color:var(--pink)}
+    .modal-title{text-align:center;font-size:16px;font-weight:700;color:var(--white);margin-bottom:3px}
+    .modal-artist{text-align:center;font-size:12px;color:var(--sub);margin-bottom:14px}
+    .modal-meta{display:flex;justify-content:center;gap:8px;margin-bottom:16px}
+    .modal-fav{background:transparent;border:1px solid var(--border);border-radius:99px;padding:4px 14px;font-size:12px;color:var(--sub);cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:5px}
+    .modal-fav:hover,.modal-fav.active{border-color:var(--pink);color:var(--pink);background:rgba(212,132,154,0.08)}
+    audio{width:100%;border-radius:8px;margin-bottom:14px;accent-color:var(--pink)}
+    .modal-progress-wrap{background:var(--bg3);border-radius:99px;height:4px;margin-bottom:6px;cursor:pointer;overflow:hidden}
+    .modal-progress{height:4px;border-radius:99px;background:linear-gradient(90deg,var(--cream),var(--pink));width:0%}
+    .modal-time{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:16px}
+    .modal-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+    .modal-ctrl{width:38px;height:38px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:19px;transition:all .15s}
+    .modal-ctrl:hover{background:rgba(212,132,154,0.1);color:var(--pink2)}
+    .modal-ctrl.play{background:var(--pink3);color:var(--pink4);width:48px;height:48px;font-size:21px}
+    .modal-ctrl.play:hover{background:var(--pink)}
+    .modal-rating{text-align:center}
+    .modal-rating p{font-size:11px;color:var(--sub);margin-bottom:6px}
+    .star-row{display:flex;justify-content:center;gap:6px}
+    .star{font-size:22px;color:var(--bg3);cursor:pointer;transition:color .15s}
+    .star.active{color:var(--pink)}
+    @media(max-width:768px){.two-col{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="content">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="icon"><i class="ti ti-search"></i></div><div class="num" id="statSearch">0</div><div class="lbl">Pencarian</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-star"></i></div><div class="num">47</div><div class="lbl">Dirating</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-heart"></i></div><div class="num" id="statFav">0</div><div class="lbl">Favorit</div></div>
+      <div class="stat-card"><div class="icon"><i class="ti ti-sparkles"></i></div><div class="num">15</div><div class="lbl">Rekomendasi</div></div>
+    </div>
+    <div class="two-col">
+      <div class="card">
+        <div class="section-title">Mood Favoritmu</div>
+        <div class="mood-list">
+          <div class="mood-row"><div class="mood-label"><span>Happy 😊</span><span>72%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:72%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Chill 😌</span><span>58%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:58%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Energetic ⚡</span><span>45%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:45%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Sad 🥺</span><span>30%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:30%"></div></div></div>
+          <div class="mood-row"><div class="mood-label"><span>Romantic 💕</span><span>20%</span></div><div class="mood-bar-bg"><div class="mood-bar" style="width:20%"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">Rekomendasi Untukmu ✨</div>
+        <div class="rec-list">
+          <div class="rec-item" onclick="openPlayer({t:'Be There for Me',a:'NCT 127',g:'K-Pop',r:'5.0',url:'',cover:''})"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Be There for Me</div><div class="rec-sub">NCT 127 • K-Pop</div></div><div class="rec-stars">★ 5.0</div></div>
+          <div class="rec-item" onclick="openPlayer({t:'Dynamite',a:'BTS',g:'K-Pop',r:'4.7',url:'',cover:''})"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Dynamite</div><div class="rec-sub">BTS • K-Pop</div></div><div class="rec-stars">★ 4.7</div></div>
+          <div class="rec-item" onclick="openPlayer({t:'Espresso',a:'Sabrina Carpenter',g:'Pop',r:'4.5',url:'',cover:''})"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Espresso</div><div class="rec-sub">Sabrina Carpenter • Pop</div></div><div class="rec-stars">★ 4.5</div></div>
+          <div class="rec-item" onclick="openPlayer({t:'Anti-Hero',a:'Taylor Swift',g:'Pop',r:'4.8',url:'',cover:''})"><div class="rec-thumb"><i class="ti ti-music"></i></div><div class="rec-info"><div class="rec-title">Anti-Hero</div><div class="rec-sub">Taylor Swift • Pop</div></div><div class="rec-stars">★ 4.8</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Riwayat Pencarian Terakhir</div>
+      <div class="table-wrap"><table class="history-table">
+        <thead><tr><th>#</th><th>Lagu</th><th>Genre</th><th>Waktu</th></tr></thead>
+        <tbody id="historyTableBody"><tr><td colspan="4" style="text-align:center;color:var(--sub);padding:20px;font-size:12px">Belum ada riwayat. Cari lagu dulu yuk! 🎵</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- MINI PLAYER -->
+<div class="mini-player" id="miniPlayer">
+  <div class="mini-progress-wrap"><div class="mini-progress" id="miniProgress"></div></div>
+  <div class="mini-thumb" id="miniThumb"><i class="ti ti-music"></i></div>
+  <div class="mini-info"><div class="mini-title" id="miniTitle">—</div><div class="mini-artist" id="miniArtist">—</div></div>
+  <div class="mini-controls">
+    <button class="ctrl-btn" onclick="audioEl.currentTime=Math.max(0,audioEl.currentTime-10)"><i class="ti ti-rewind-10"></i></button>
+    <button class="ctrl-btn play" id="miniPlayBtn" onclick="togglePlay()"><i class="ti ti-player-play-filled"></i></button>
+    <button class="ctrl-btn" onclick="audioEl.currentTime=Math.min(audioEl.duration||0,audioEl.currentTime+10)"><i class="ti ti-forward-10"></i></button>
+    <button class="ctrl-btn" onclick="openModal()"><i class="ti ti-chevron-up"></i></button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOut(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-art" id="modalArt"><i class="ti ti-music"></i></div>
+    <div class="modal-title" id="modalTitle">—</div>
+    <div class="modal-artist" id="modalArtist">—</div>
+    <div class="modal-meta">
+      <span class="badge badge-pop" id="modalGenre">—</span>
+      <button class="modal-fav" id="favBtn" onclick="toggleFav()"><i class="ti ti-heart"></i> Favorit</button>
+    </div>
+    <audio id="audioEl" controls preload="none" style="width:100%;margin-bottom:14px;accent-color:#d4849a"></audio>
+    <div class="modal-progress-wrap" onclick="seekModal(event)"><div class="modal-progress" id="modalProgress"></div></div>
+    <div class="modal-time"><span id="curTime">0:00</span><span id="totTime">—</span></div>
+    <div class="modal-controls">
+      <button class="modal-ctrl" onclick="audioEl.currentTime=Math.max(0,audioEl.currentTime-10)"><i class="ti ti-rewind-10"></i></button>
+      <button class="modal-ctrl play" id="modalPlayBtn" onclick="togglePlay()"><i class="ti ti-player-play-filled"></i></button>
+      <button class="modal-ctrl" onclick="audioEl.currentTime=Math.min(audioEl.duration||0,audioEl.currentTime+10)"><i class="ti ti-forward-10"></i></button>
+    </div>
+    <div class="modal-rating"><p>Beri rating lagu ini</p>
+      <div class="star-row">
+        <span class="star active" onclick="setRating(1)">★</span>
+        <span class="star active" onclick="setRating(2)">★</span>
+        <span class="star active" onclick="setRating(3)">★</span>
+        <span class="star active" onclick="setRating(4)">★</span>
+        <span class="star" onclick="setRating(5)">★</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+  buildSidebar('index.html');
+  buildTopbar('Selamat datang, Indira 👋', true);
+
+  const audioEl = document.getElementById('audioEl');
+  let currentSong = null;
+
+  function openPlayer(song) {
+    currentSong = song;
+    document.getElementById('miniTitle').textContent = song.t;
+    document.getElementById('miniArtist').textContent = song.a;
+    document.getElementById('modalTitle').textContent = song.t;
+    document.getElementById('modalArtist').textContent = song.a;
+    document.getElementById('modalGenre').textContent = song.g;
+    const art = document.getElementById('modalArt');
+    art.innerHTML = song.cover ? `<img src="${song.cover}" onerror="this.parentElement.innerHTML='<i class=\\'ti ti-music\\'>'"/>` : '<i class="ti ti-music"></i>';
+    const isFav = getFavorites().some(f => f.title === song.t);
+    document.getElementById('favBtn').classList.toggle('active', isFav);
+    if (song.url) { audioEl.src = song.url; audioEl.play(); }
+    else { audioEl.src = ''; audioEl.load(); }
+    document.getElementById('miniPlayer').classList.add('show');
+    openModal();
+    saveHistory({ title: song.t, artist: song.a, genre: song.g, time: new Date().toLocaleString('id-ID') });
+    updateStats(); renderHistoryTable();
+  }
+
+  function toggleFav() {
+    if (!currentSong) return;
+    const favs = getFavorites();
+    const isFav = favs.some(f => f.title === currentSong.t);
+    if (isFav) { removeFavorite(currentSong.t); document.getElementById('favBtn').classList.remove('active'); }
+    else { saveFavorite({ title: currentSong.t, artist: currentSong.a, cover: currentSong.cover || '' }); document.getElementById('favBtn').classList.add('active'); }
+    updateStats();
+  }
+
+  audioEl.addEventListener('timeupdate', () => {
+    if (!audioEl.duration) return;
+    const pct = (audioEl.currentTime / audioEl.duration * 100).toFixed(1) + '%';
+    document.getElementById('miniProgress').style.width = pct;
+    document.getElementById('modalProgress').style.width = pct;
+    document.getElementById('curTime').textContent = fmt(audioEl.currentTime);
+    document.getElementById('totTime').textContent = fmt(audioEl.duration);
+  });
+  audioEl.addEventListener('play', () => setIcon(true));
+  audioEl.addEventListener('pause', () => setIcon(false));
+
+  function togglePlay() { audioEl.paused ? audioEl.play() : audioEl.pause(); }
+  function setIcon(p) {
+    const ic = p ? 'ti-player-pause-filled' : 'ti-player-play-filled';
+    ['miniPlayBtn','modalPlayBtn'].forEach(id => document.getElementById(id).innerHTML = `<i class="ti ${ic}"></i>`);
+  }
+  function fmt(s) { if (!s || isNaN(s)) return '—'; s = Math.floor(s); return Math.floor(s/60) + ':' + (s%60<10?'0':'') + s%60; }
+  function seekModal(e) { if (!audioEl.duration) return; const r = e.currentTarget.getBoundingClientRect(); audioEl.currentTime = (e.clientX - r.left) / r.width * audioEl.duration; }
+  function setRating(n) { document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('active', i < n)); }
+  function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
+  function closeOut(e) { if (e.target === document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('show'); }
+
+  function updateStats() {
+    document.getElementById('statSearch').textContent = getHistory().length;
+    document.getElementById('statFav').textContent = getFavorites().length;
+  }
+
+  function renderHistoryTable() {
+    const h = getHistory().slice(0, 5);
+    const tbody = document.getElementById('historyTableBody');
+    if (!h.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--sub);padding:20px;font-size:12px">Belum ada riwayat 🎵</td></tr>'; return; }
+    tbody.innerHTML = h.map((item, i) => `
+      <tr class="row-link">
+        <td style="color:var(--sub)">${i+1}</td>
+        <td><span class="song-name">${item.title}</span><span class="artist-name">${item.artist}</span></td>
+        <td><span class="badge badge-pop">${item.genre||'—'}</span></td>
+        <td style="color:var(--sub);font-size:11px;white-space:nowrap">${item.time}</td>
+      </tr>`).join('');
+  }
+
+  updateStats();
+  renderHistoryTable();
+</script>
+</body>
+</html>
