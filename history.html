@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Riwayat — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link rel="stylesheet" href="sidebar2.css"/>
+  <style>
+    .history-table{width:100%;border-collapse:collapse;font-size:12px}
+    .history-table th{text-align:left;font-size:10px;font-weight:600;color:var(--sub);letter-spacing:.05em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+    .history-table td{padding:10px;border-bottom:1px solid rgba(212,132,154,0.07);vertical-align:middle}
+    .history-table tr:last-child td{border-bottom:none}
+    .row-link{cursor:pointer;transition:background .1s,transform .15s}
+    .row-link:hover{background:rgba(212,132,154,0.05);transform:translateX(2px)}
+    .btn-clear{background:transparent;border:1px solid var(--border);color:var(--sub);border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:5px}
+    .btn-clear:hover{border-color:var(--pink);color:var(--pink);transform:scale(1.04)}
+    .del-btn{background:transparent;border:none;cursor:pointer;color:var(--sub);font-size:14px;padding:4px;border-radius:6px;transition:all .15s}
+    .del-btn:hover{color:var(--pink);background:rgba(212,132,154,0.1);transform:scale(1.15)}
+    .title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="content">
+    <div class="card">
+      <div class="title-row">
+        <div class="section-title">Riwayat Pencarian 🕐</div>
+        <button class="btn-clear" onclick="clearAll()"><i class="ti ti-trash"></i> Hapus Semua</button>
+      </div>
+      <div id="historyContent"></div>
+    </div>
+  </div>
+</div>
+<script src="sidebar2.js"></script>
+<script>
+  buildSidebar('history.html');
+  buildTopbar('Riwayat Pencarian');
+
+  function render() {
+    const h = getHistory();
+    const el = document.getElementById('historyContent');
+    if (!h.length) {
+      el.innerHTML = '<div class="empty-state"><i class="ti ti-history"></i><p>Belum ada riwayat pencarian.<br>Cari lagu dari dashboard dulu ya!</p></div>';
+      return;
+    }
+    el.innerHTML = `<div style="overflow-x:auto"><table class="history-table">
+      <thead><tr><th>#</th><th>Lagu</th><th>Artis</th><th>Waktu</th><th></th></tr></thead>
+      <tbody>${h.map((item,i)=>`
+        <tr class="row-link">
+          <td style="color:var(--sub)">${i+1}</td>
+          <td style="font-weight:600;color:var(--white)">${item.title}</td>
+          <td style="color:var(--sub)">${item.artist}</td>
+          <td style="color:var(--sub);font-size:11px;white-space:nowrap">${item.time}</td>
+          <td><button class="del-btn" onclick="delOne('${item.title.replace(/'/g,"\\'")}',event)"><i class="ti ti-x"></i></button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+  }
+
+  function delOne(title, e) {
+    e.stopPropagation();
+    let h = getHistory().filter(x => x.title !== title);
+    localStorage.setItem('mr_history', JSON.stringify(h));
+    render();
+  }
+
+  function clearAll() {
+    if (confirm('Hapus semua riwayat?')) { localStorage.removeItem('mr_history'); render(); }
+  }
+
+  render();
+</script>
+</body>
+</html>
