@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengaturan — MusicRec</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+  <link rel="stylesheet" href="sidebar2.css"/>
+  <style>
+    .setting-group{margin-bottom:20px}
+    .setting-group-title{font-size:11px;font-weight:600;color:var(--sub);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+    .setting-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(212,132,154,0.07)}
+    .setting-item:last-child{border-bottom:none}
+    .setting-left{display:flex;align-items:center;gap:12px}
+    .setting-icon{width:36px;height:36px;border-radius:9px;background:rgba(212,132,154,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .2s}
+    .setting-item:hover .setting-icon{transform:scale(1.1) rotate(-5deg)}
+    .setting-icon i{font-size:17px;color:var(--pink)}
+    .setting-info .setting-title{font-size:13px;font-weight:600;color:var(--white)}
+    .setting-info .setting-sub{font-size:11px;color:var(--sub);margin-top:1px}
+    .toggle{width:42px;height:24px;border-radius:99px;background:var(--bg3);border:1px solid var(--border);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+    .toggle.on{background:var(--pink3);border-color:var(--pink3)}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s cubic-bezier(.34,1.56,.64,1)}
+    .toggle.on::after{left:21px}
+    .setting-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--text);font-family:inherit;outline:none;cursor:pointer;transition:border-color .2s}
+    .setting-select:focus{border-color:var(--pink)}
+    .btn-danger{background:transparent;border:1px solid rgba(255,80,80,0.3);color:#ff8080;border-radius:9px;padding:9px 18px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:7px}
+    .btn-danger:hover{background:rgba(255,80,80,0.08);border-color:rgba(255,80,80,0.5);transform:scale(1.03)}
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--pink2);opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+<div class="main">
+  <div class="content">
+    <div class="card">
+      <div class="setting-group">
+        <div class="setting-group-title">Notifikasi</div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-bell"></i></div><div class="setting-info"><div class="setting-title">Notifikasi Rekomendasi</div><div class="setting-sub">Dapatkan rekomendasi lagu baru setiap hari</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-flame"></i></div><div class="setting-info"><div class="setting-title">Notifikasi Trending</div><div class="setting-sub">Info lagu favoritmu yang sedang trending</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-star"></i></div><div class="setting-info"><div class="setting-title">Pengingat Rating</div><div class="setting-sub">Ingatkan untuk memberi rating lagu</div></div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-title">Tampilan & Audio</div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-volume"></i></div><div class="setting-info"><div class="setting-title">Kualitas Preview</div><div class="setting-sub">Kualitas audio saat preview lagu</div></div></div>
+          <select class="setting-select"><option>Standar</option><option selected>Tinggi</option></select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-language"></i></div><div class="setting-info"><div class="setting-title">Bahasa Aplikasi</div><div class="setting-sub">Bahasa tampilan antarmuka</div></div></div>
+          <select class="setting-select"><option selected>Indonesia</option><option>English</option></select>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-player-play"></i></div><div class="setting-info"><div class="setting-title">Autoplay</div><div class="setting-sub">Putar lagu berikutnya otomatis</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-title">Privasi & Data</div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-history"></i></div><div class="setting-info"><div class="setting-title">Simpan Riwayat</div><div class="setting-sub">Simpan riwayat pencarian & pemutaran</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon"><i class="ti ti-chart-bar"></i></div><div class="setting-info"><div class="setting-title">Analitik Penggunaan</div><div class="setting-sub">Bantu kami tingkatkan rekomendasi</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+      <div class="setting-group">
+        <div class="setting-group-title">Akun</div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon" style="background:rgba(255,80,80,0.1)"><i class="ti ti-trash" style="color:#ff8080"></i></div><div class="setting-info"><div class="setting-title">Hapus Semua Data</div><div class="setting-sub">Hapus riwayat, favorit, dan rating</div></div></div>
+          <button class="btn-danger" onclick="clearAll()"><i class="ti ti-trash"></i>Hapus</button>
+        </div>
+        <div class="setting-item">
+          <div class="setting-left"><div class="setting-icon" style="background:rgba(255,80,80,0.1)"><i class="ti ti-logout" style="color:#ff8080"></i></div><div class="setting-info"><div class="setting-title">Keluar dari Akun</div><div class="setting-sub">Logout dari MusicRec</div></div></div>
+          <button class="btn-danger" onclick="logout()"><i class="ti ti-logout"></i>Keluar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="sidebar3.js"></script>
+<script>
+  buildSidebar('settings.html');
+  buildTopbar('Pengaturan');
+  function clearAll(){
+    if(confirm('Yakin hapus semua data? Riwayat, favorit, dan rating akan hilang.')){
+      ['mr_history','mr_favs','mr_ratings','mr_notifs','mr_photo'].forEach(k=>localStorage.removeItem(k));
+      showToast('Semua data berhasil dihapus 🗑️');
+    }
+  }
+  function showToast(msg){
+    const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2500);
+  }
+</script>
+</body>
+</html>
