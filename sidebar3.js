@@ -75,6 +75,30 @@ function onSearch(q){
   drop.classList.add('show');
   _st=setTimeout(()=>doSearch(q),600);
 }
+function toggleTheme() {
+  const toggleEl = document.getElementById('themeToggle');
+  toggleEl.classList.toggle('on');
+  
+  // Cek apakah toggle aktif (mode gelap)
+  if (toggleEl.classList.contains('on')) {
+    document.body.classList.add('dark-theme');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.body.classList.remove('dark-theme');
+    localStorage.setItem('theme', 'light');
+  }
+}
+
+// Jalankan saat halaman dimuat untuk memuat preferensi pengguna
+window.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem('theme');
+  const toggleEl = document.getElementById('themeToggle');
+  
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    if (toggleEl) toggleEl.classList.add('on');
+  }
+});
 function clearSearch(){
   const inp=document.getElementById('searchInput');
   const drop=document.getElementById('searchDrop');
