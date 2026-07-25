@@ -43,6 +43,16 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);mi
 .brand-icon i{font-size:18px;color:var(--pink4)}
 .brand-name{font-size:16px;font-weight:700;color:var(--white)}
 .brand-name span{color:var(--pink2)}
+body.dark-theme {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Sesuaikan warna elemen lain saat dark mode aktif */
+body.dark-theme .setting-item {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
 .nav-item{display:flex;align-items:center;gap:9px;padding:9px 18px;font-size:13px;color:var(--sub);cursor:pointer;transition:color .15s,background .15s;text-decoration:none;border-left:2px solid transparent}
 .nav-item:hover{color:var(--pink2);background:rgba(212,132,154,0.07);border-left-color:rgba(212,132,154,0.3)}
 .nav-item.active{color:var(--pink2);background:rgba(212,132,154,0.1);border-left-color:var(--pink);font-weight:600}
